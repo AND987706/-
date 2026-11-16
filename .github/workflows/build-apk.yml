@@ -12,8 +12,20 @@ jobs:
       - name: 检出项目
         uses: actions/checkout@v4
 
+      - name: 设置 Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 下载打包工具 JAR
+        run: |
+          set -e
+          curl -fL --retry 3 -o apkbuilder-cli.jar \
+            https://github.com/Steven-Qiang/AutoJs6-ApkBuilder/releases/download/v1.1.0/apkbuilder-cli.jar
+          ls -lh apkbuilder-cli.jar
+
       - name: 下载 AutoJs6 模板 APK（最新版）
-        id: download
         run: |
           set -e
           python3 - <<'PY'
@@ -42,11 +54,10 @@ jobs:
           ls -lh autojs6.apk
 
       - name: 打包脚本为独立 APK
-        uses: Steven-Qiang/AutoJs6-ApkBuilder@main
-        with:
-          autojs: autojs6.apk
-          source: ./source
-          output: AutoTap.apk
+        run: |
+          set -e
+          java -jar apkbuilder-cli.jar -a autojs6.apk -s ./source -o AutoTap.apk
+          ls -lh AutoTap.apk
 
       - name: 上传 APK 产物
         uses: actions/upload-artifact@v4
