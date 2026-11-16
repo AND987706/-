@@ -1,0 +1,67 @@
+[
+  {
+    "name": "示例：连续点击",
+    "description": "每 1 秒点击一次坐标 (540, 960)，共 3 轮。适合快速上手测试。",
+    "loop": 3,
+    "interval": 1000,
+    "actions": [
+      {
+        "type": "click",
+        "x": 540,
+        "y": 960,
+        "label": "点击屏幕中央"
+      },
+      {
+        "type": "wait",
+        "ms": 500,
+        "label": "等待 0.5 秒"
+      }
+    ]
+  },
+  {
+    "name": "示例：上滑浏览",
+    "description": "从屏幕下方滑到上方，共 5 轮。适合刷列表/信息流。",
+    "loop": 5,
+    "interval": 1200,
+    "actions": [
+      {
+        "type": "swipe",
+        "x1": 540,
+        "y1": 1500,
+        "x2": 540,
+        "y2": 500,
+        "duration": 500,
+        "label": "向上滑动"
+      }
+    ]
+  },
+  {
+    "name": "示例：组合操作",
+    "description": "点击 → 输入文字 → 按返回键。演示多种动作组合。",
+    "loop": 1,
+    "interval": 600,
+    "actions": [
+      {
+        "type": "click",
+        "x": 500,
+        "y": 400,
+        "label": "点击输入框"
+      },
+      {
+        "type": "input",
+        "text": "Hello AutoTap",
+        "label": "输入文字"
+      },
+      {
+        "type": "wait",
+        "ms": 800,
+        "label": "等待"
+      },
+      {
+        "type": "key",
+        "key": "back",
+        "label": "返回"
+      }
+    ]
+  }
+]
