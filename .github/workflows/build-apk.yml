@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 检出项目
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: 设置 Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -25,32 +25,11 @@ jobs:
             https://github.com/Steven-Qiang/AutoJs6-ApkBuilder/releases/download/v1.1.0/apkbuilder-cli.jar
           ls -lh apkbuilder-cli.jar
 
-      - name: 下载 AutoJs6 模板 APK（最新版）
+      - name: 下载 AutoJs6 模板 APK（锁定兼容版本 v6.7.0）
         run: |
           set -e
-          python3 - <<'PY'
-          import json, urllib.request, sys
-          url = "https://api.github.com/repos/SuperMonster003/AutoJs6/releases/latest"
-          req = urllib.request.Request(url, headers={"User-Agent": "autotap-build", "Accept": "application/vnd.github+json"})
-          try:
-              data = json.load(urllib.request.urlopen(req, timeout=30))
-          except Exception as e:
-              print("::error::获取 release 信息失败:", e)
-              sys.exit(1)
-          assets = data.get("assets", [])
-          apks = [a for a in assets if a["name"].lower().endswith(".apk")]
-          universal = [a for a in apks if "universal" in a["name"].lower()]
-          chosen = universal or apks
-          if not chosen:
-              print("::error::未找到可下载的 APK 模板")
-              sys.exit(1)
-          print("选用模板:", chosen[0]["name"])
-          try:
-              urllib.request.urlretrieve(chosen[0]["browser_download_url"], "autojs6.apk")
-          except Exception as e:
-              print("::error::下载模板失败:", e)
-              sys.exit(1)
-          PY
+          curl -fL --retry 3 -o autojs6.apk \
+            https://github.com/SuperMonster003/AutoJs6/releases/download/v6.7.0/autojs6-v6.7.0-universal-047ae62e.apk
           ls -lh autojs6.apk
 
       - name: 打包脚本为独立 APK
@@ -60,7 +39,7 @@ jobs:
           ls -lh AutoTap.apk
 
       - name: 上传 APK 产物
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AutoTap-APK
           path: AutoTap.apk
